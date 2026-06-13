@@ -1,0 +1,3 @@
+# Cloudflare Pages headers. Long-cache fingerprinted/static assets.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable

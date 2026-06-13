@@ -1,0 +1,66 @@
+/* Nay San — homepage (sidebar + bio). Dead-simple, hand-written CSS.
+   Left sidebar + main column. Light, system sans. No framework, no build. */
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background: #fff;
+  font-size: 16px;
+}
+
+a { color: #0066cc; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---- two-column layout: sidebar + main (left-aligned, wide) ---- */
+.layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 56px;
+  max-width: 1200px;
+  margin: 0;
+  padding: 40px 32px 60px;
+}
+
+/* ---- sidebar ---- */
+.sidebar { width: 200px; flex-shrink: 0; }
+.sidebar .photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #eee;
+  display: block;
+  margin-bottom: 16px;
+}
+.sidebar h1 { font-size: 1.4rem; margin: 0 0 16px; color: #111; }
+.sidebar .label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #999;
+  margin-bottom: 4px;
+}
+.sidebar .contact a { display: block; font-size: 0.9rem; margin-bottom: 4px; }
+.sidebar .contact i { color: #555; margin-right: 6px; }
+
+/* ---- main column ---- */
+.main { flex: 1; min-width: 0; }
+.main p { margin: 0 0 1em; }
+.home-body-text { max-width: 42rem; }
+
+/* ---- responsive: stack sidebar above main, center it ---- */
+@media (max-width: 700px) {
+  .layout { flex-direction: column; gap: 24px; padding: 24px 18px 48px; }
+  .sidebar { width: 100%; text-align: center; }
+  .sidebar .photo { margin: 0 auto 12px; }
+
+  /* contacts: icons only, on a single centered row */
+  .sidebar .contact { display: flex; justify-content: center; gap: 22px; }
+  .sidebar .contact a { display: inline-block; margin: 0; font-size: 1.3rem; }
+  .sidebar .contact a span { display: none; }
+  .sidebar .contact i { margin-right: 0; }
+}

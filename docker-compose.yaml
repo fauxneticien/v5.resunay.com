@@ -1,0 +1,21 @@
+# Dev container for the resunay v5 static site.
+# Workflow: ssh into homelab -> `docker compose up -d` -> attach in VS Code ->
+# edit -> `task build` -> `task push`. Preview via `task preview`.
+
+services:
+  site:
+    build: .
+    image: resunay-v5-dev
+    container_name: resunay-v5-dev
+    working_dir: /workspace
+    volumes:
+      - ./:/workspace            # edits on host <-> container; build output lands in ./public
+      - ${HOME}/.config/gh:/root/.config/gh:ro   # reuse host GitHub CLI auth (read-only)
+    ports:
+      - "8919:8919"             # preview (uncommon port)
+    env_file:
+      - path: .env              # CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID for `task push`
+        required: false         # not needed for build/preview, only for push
+    stdin_open: true
+    tty: true
+    command: sleep infinity

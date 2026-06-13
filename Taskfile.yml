@@ -1,0 +1,48 @@
+# go-task tasks for the resunay v5 static site.
+# Run inside the dev container (Task is installed in the image): `task <name>`.
+# `task` with no args lists available tasks.
+
+version: '3'
+
+vars:
+  PROJECT: resunay-v5
+  PUBLIC_DIR: public
+  PREVIEW_PORT: 8919
+  BRANCH: main          # Cloudflare Pages production branch — deploys on it go live
+
+tasks:
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
+    silent: true
+
+  build:
+    desc: "Build the static site into {{.PUBLIC_DIR}}/ (hand-written for now — no compile step)"
+    cmds:
+      - 'echo "Static site — nothing to compile. Artefacts are in {{.PUBLIC_DIR}}/."'
+      # When a generator (Astro/Eleventy/Hugo/…) is added later, its build command
+      # goes here and must emit into {{.PUBLIC_DIR}}/ so `push` stays unchanged.
+
+  preview:
+    desc: "Serve {{.PUBLIC_DIR}}/ on port {{.PREVIEW_PORT}} for local preview (Pages-faithful)"
+    cmds:
+      - wrangler pages dev {{.PUBLIC_DIR}} --ip 0.0.0.0 --port {{.PREVIEW_PORT}}
+
+  create:
+    desc: "Create the Cloudflare Pages project (one-time; sets the production branch)"
+    cmds:
+      - wrangler pages project create {{.PROJECT}} --production-branch {{.BRANCH}}
+
+  push:
+    desc: "Deploy {{.PUBLIC_DIR}}/ to Cloudflare Pages PRODUCTION ({{.PROJECT}}) — needs .env token"
+    deps: [build]
+    cmds:
+      # --branch matches the production branch, so this is a PRODUCTION deploy
+      # (we use local `task preview`, not Cloudflare preview deployments).
+      - wrangler pages deploy {{.PUBLIC_DIR}} --project-name {{.PROJECT}} --branch {{.BRANCH}}
+
+  whoami:
+    desc: Check Cloudflare auth / token is working
+    cmds:
+      - wrangler whoami

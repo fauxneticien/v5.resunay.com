@@ -1,0 +1,11 @@
+# dependencies / tooling
+node_modules/
+.wrangler/
+.DS_Store
+
+# secrets
+.env
+
+# scratch / working drafts (not deployed)
+tmp/*
+!tmp/.gitkeep
