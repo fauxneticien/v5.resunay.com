@@ -6,6 +6,9 @@
   <title>Nay San</title>
   <meta name="description" content="Nay San — building inclusive speech technologies.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+Myanmar:wght@400;700&display=swap">
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -29,19 +32,54 @@
     <!-- main content: bio only (Writing / Work added in a later phase) -->
     <main class="main">
       <div class="home-body-text">
-        <p>I&rsquo;m an AI/ML Engineer at <a href="https://rime.ai">Rime Labs</a>,
-        where I work on data pipelines and models for text-to-speech. Before that
-        I completed a PhD in Linguistics at
-        <a href="https://www.stanford.edu">Stanford</a>, advised by
-        <a href="https://web.stanford.edu/~jurafsky/">Dan Jurafsky</a>,
-        researching data-centric speech and language technologies for digitally
-        underserved languages.</p>
+        <h2>Hi, Salut, Hallo, <span lang="my" class="burmese">ဟိုင်း</span>!</h2>
 
-        <p>My through-line is turning messy, unstructured text and audio into
-        something useful &mdash; datasets for training models, or typeset content
-        for print &mdash; for people and languages that off-the-shelf tools
-        don&rsquo;t serve well.</p>
+        <p>
+          Having lived in 8 countries by 21, <em>Where are you from?</em> is a much harder question for me to answer than <em>Where are you living?</em>
+          For the easier question, the current answer is: Oakland, California.
+          For the harder question, a simplified answer is: Australia (I do hold an Australian passport after all).
+        </p>
+
+        <p>
+          Similarly, <em>Where do you work?</em> is an easy one.
+          Currently, I&rsquo;m a Staff Engineer at <a href="https://rime.ai" target="_blank">rime</a>, where I help build conversational voice AI systems.
+          Before that I was a grad student in Linguistics at Stanford (advised by <a href="https://web.stanford.edu/~jurafsky/" target="_blank">Dan Jurafsky</a>),
+          working on <a href="https://purl.stanford.edu/jx557wt1543" target="_blank">improving access to untranscribed speech corpora using AI</a>.
+        </p>
+
+        <p>
+          <em>What do you work on?</em> is a harder question.
+          A simplified answer is: speech and language data (I did get some Linguistics degrees after all).
+          A longer but somewhat abstract answer is that I enjoy working on projects that are simply impossible to tackle alone and without technological assistance,
+          thinking through all the moving parts and many participants, and architecting the systems and refining the processes that glue everything and everyone together.
+          For more concrete answers, have a gander at some of the projects below.
+        </p>
       </div>
+
+      <h2 class="section-title" id="work">Selected Work</h2>
+
+      <section>
+        <h3 class="project-category">Digital and print dictionaries</h3>
+        <div class="project-grid">
+          <div class="project">
+            <div class="project-image">[ VAD &rarr; SLI &rarr; ASR ]</div>
+            <div class="project-body">
+              <div class="project-title">Warlpiri Encyclopaedic Dictionary</div>
+              <div class="project-description">A privacy-preserving VAD + spoken
+                language ID + ASR workflow that cut transcription time ~20% on
+                archival Aboriginal-language audio.</div>
+            </div>
+          </div>
+          <div class="project">
+            <div class="project-image">[ rare-entity active learning ]</div>
+            <div class="project-body">
+              <div class="project-title">Rare named-entity recognition in ASR</div>
+              <div class="project-description">Active-learning data selection to
+                improve Siri recognition of rare names &mdash; Apple SaLT internship.</div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   </div>
 </body>
