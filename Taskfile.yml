@@ -24,8 +24,16 @@ tasks:
       # When a generator (Astro/Eleventy/Hugo/…) is added later, its build command
       # goes here and must emit into {{.PUBLIC_DIR}}/ so `push` stays unchanged.
 
+  dev:
+    desc: "Serve {{.PUBLIC_DIR}}/ on port {{.PREVIEW_PORT}} with auto-reload on save (fast edit loop)"
+    cmds:
+      # browser-sync watches the dir and injects its own reload. wrangler's
+      # --live-reload only fires on Functions rebuilds (this is a static site, so
+      # never) — see github.com/cloudflare/workers-sdk/issues/5351.
+      - browser-sync start --server {{.PUBLIC_DIR}} --files "{{.PUBLIC_DIR}}/**/*" --host 0.0.0.0 --port {{.PREVIEW_PORT}} --no-open --no-ui
+
   preview:
-    desc: "Serve {{.PUBLIC_DIR}}/ on port {{.PREVIEW_PORT}} for local preview (Pages-faithful)"
+    desc: "Serve {{.PUBLIC_DIR}}/ on port {{.PREVIEW_PORT}} — Pages-faithful (no auto-reload; use for final checks)"
     cmds:
       - wrangler pages dev {{.PUBLIC_DIR}} --ip 0.0.0.0 --port {{.PREVIEW_PORT}}
 

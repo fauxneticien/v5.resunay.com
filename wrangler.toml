@@ -1,3 +1,6 @@
 name = "resunay-v5"
 pages_build_output_dir = "public"
-# Static site — no Pages Functions yet, so no compatibility_date needed.
+# Static site — no Pages Functions yet. Still pin a compatibility_date so
+# `wrangler pages dev` doesn't default to "today", which can outrun the date
+# the bundled workerd runtime supports and break local preview.
+compatibility_date = "2026-06-18"

@@ -33,7 +33,9 @@ RUN mkdir -p -m 755 /etc/apt/keyrings \
 RUN sh -c "$(curl -fsSL https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
 
 # Wrangler (pin a version for reproducibility if desired, e.g. wrangler@4)
-RUN npm install -g wrangler
+# browser-sync powers `task dev` (auto-reload on save); wrangler's --live-reload
+# doesn't fire for static-only Pages projects (workers-sdk issue #5351).
+RUN npm install -g wrangler browser-sync
 
 WORKDIR /workspace
 
