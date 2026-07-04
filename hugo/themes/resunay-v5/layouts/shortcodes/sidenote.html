@@ -1,0 +1,4 @@
+{{- /* Tufte margin sidenote (Potluck --move-up pattern; see essay.css).
+       Inline, attached to the preceding word with no space. Optional moveup=N
+       nudges the note up N lines to sit beside its reference. */ -}}
+<label class="sidenote-ref" aria-hidden="true"></label><aside class="sidenote"{{ with .Get "moveup" }} style="--move-up: {{ . }}"{{ end }}>{{ .Inner | safeHTML }}</aside>

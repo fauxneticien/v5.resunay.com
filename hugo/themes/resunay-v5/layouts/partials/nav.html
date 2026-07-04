@@ -1,0 +1,9 @@
+<nav>
+  <a class="site-name" href="{{ "/" | relURL }}">{{ .Site.Title }}</a>
+  {{/* Per-page header: the site name always goes home (so no separate Home link).
+       A single post shows a "Writing" back-link to its index; the Writing list
+       page and taxonomy pages don't. */}}
+  {{ if and (eq .Section "writing") (eq .Kind "page") }}
+  <a href="{{ "writing/" | relURL }}">Writing</a>
+  {{ end }}
+</nav>

@@ -7,12 +7,19 @@ services:
     build: .
     image: resunay-v5-dev
     container_name: resunay-v5-dev
+    # Run as the host user so files Hugo/Wrangler write into the bind-mounted repo
+    # (e.g. ./public) are owned by you on the host, not root. Defaults to 1000:1000
+    # — the homelab's `naysan`, which also matches the image's `node` user (uid 1000).
+    # On a host where your uid isn't 1000: `UID=$(id -u) GID=$(id -g) docker compose up -d`.
+    user: "${UID:-1000}:${GID:-1000}"
     working_dir: /workspace
     volumes:
       - ./:/workspace            # edits on host <-> container; build output lands in ./public
-      - ${HOME}/.config/gh:/root/.config/gh:ro   # reuse host GitHub CLI auth (read-only)
+      - ${HOME}/.config/gh:/home/node/.config/gh:ro   # reuse host GitHub CLI auth (read-only); node user's home
     ports:
       - "8919:8919"             # preview (uncommon port)
+    environment:
+      - HOME=/home/node         # numeric `user:` defaults HOME to /; node (uid 1000) owns /home/node
     env_file:
       - path: .env              # CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID for `task push`
         required: false         # not needed for build/preview, only for push

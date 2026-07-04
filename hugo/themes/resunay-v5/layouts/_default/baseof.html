@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language.Lang | default "en" }}">
+<head>
+  {{ partial "head.html" . }}
+</head>
+<body>
+  <div class="page">
+    {{ partial "nav.html" . }}
+    <main class="content">
+      {{ block "main" . }}{{ end }}
+    </main>
+  </div>
+
+  {{/* progressive enhancement: hover-anchors on headings (Litt-style) */}}
+  <script>
+    document.querySelectorAll('.content h2[id], .content h3[id]').forEach(function (h) {
+      var a = document.createElement('a');
+      a.className = 'anchor';
+      a.href = '#' + h.id;
+      a.textContent = '#';
+      h.appendChild(a);
+    });
+  </script>
+
+  {{ if .HasShortcode "gallery" }}
+  {{/* PhotoSwipe lightbox — wires every .pswp-gallery on the page */}}
+  <script type="module">
+    import PhotoSwipeLightbox from '{{ "photoswipe/photoswipe-lightbox.esm.js" | relURL }}';
+
+    const lightbox = new PhotoSwipeLightbox({
+      gallery: '.pswp-gallery',
+      children: 'a',
+      pswpModule: () => import('{{ "photoswipe/photoswipe.esm.js" | relURL }}'),
+    });
+
+    // in-lightbox caption from each link's data-pswp-caption (falls back to alt)
+    lightbox.on('uiRegister', () => {
+      lightbox.pswp.ui.registerElement({
+        name: 'dynamic-caption', order: 9, isButton: false, appendTo: 'root',
+        onInit: (el, pswp) => {
+          pswp.on('change', () => {
+            const src = pswp.currSlide && pswp.currSlide.data && pswp.currSlide.data.element;
+            const cap = src
+              ? (src.getAttribute('data-pswp-caption')
+                 || (src.querySelector('img') && src.querySelector('img').getAttribute('alt'))
+                 || '')
+              : '';
+            el.innerHTML = cap;
+            el.style.display = cap ? 'block' : 'none';
+          });
+        },
+      });
+    });
+
+    lightbox.init();
+  </script>
+  {{ end }}
+
+  {{ if .HasShortcode "abcjs" }}
+  {{/* abcjs plugin: scans pre code.abcjs and renders score + tabs + audio.
+       Deferred module runs after the DOM is parsed and after the classic
+       ABCJS lib script in <head>, so the global is available. */}}
+  <script type="module">
+    import abcjs from '{{ "plugins/abcjs/abcjs.js" | relURL }}';
+    abcjs.init();
+  </script>
+  {{ end }}
+
+  {{ if .HasShortcode "gpx" }}
+  {{/* gpx plugin: scans .gpx-widget and builds the Leaflet map + stats.
+       Deferred module runs after the classic Leaflet lib script in <head>. */}}
+  <script type="module">
+    import gpx from '{{ "plugins/gpx/gpx.js" | relURL }}';
+    gpx.init();
+  </script>
+  {{ end }}
+
+  {{ if .HasShortcode "mermaid" }}
+  {{/* mermaid: load the (large) UMD lib at end of body so it doesn't block
+       render, then render every <pre class="mermaid"> into an SVG. */}}
+  <script src="{{ "plugins/mermaid/vendor/mermaid.min.js" | relURL }}"></script>
+  <script>
+    mermaid.initialize({ startOnLoad: false, securityLevel: 'loose' });
+    mermaid.run();
+  </script>
+  {{ end }}
+</body>
+</html>

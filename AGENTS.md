@@ -6,40 +6,44 @@ Guidance for AI coding agents working in this repo. Tool-agnostic.
 
 `v5.resunay.com` — the personal website of **Nay San**. Version 5, a rebuild in progress.
 
-- **Plain static site** — HTML + CSS authored directly: no framework, no
-  static-site generator, no build step.
+- **Hugo static site** — posts in Markdown, templates in a vendored theme. The
+  homepage is a standalone Hugo layout (plain HTML), decoupled from the blog.
 - **Built locally, deployed to Cloudflare Pages** (`resunay-v5.pages.dev`).
   Cloudflare is a host, not a build environment — **no cloud build**.
-- **Current scope:** a homepage with **sidebar + bio** only. Writing/Work
-  sections and a separate blog are deferred to later phases.
+- **Current scope:** a **sidebar + bio** homepage plus a **blog at `/blog/`**
+  with one post (Warlpiri Encyclopaedic Dictionary). More posts/sections later.
 
 ## Layout
 
 ```
-public/              ← the deploy artefact (Cloudflare Pages serves this dir)
-  index.html         homepage (sidebar + bio)
-  Nay-San_CV.pdf     CV (kept at root, outside the immutable /assets cache)
-  _headers           Cloudflare Pages headers (long-cache for /assets/*)
-  assets/            style.css, photo.jpg
-Dockerfile           Node dev container: Task + Wrangler + gh
+hugo/                ← Hugo source (builds into public/ via publishDir=../public)
+  hugo.toml          site config (baseURL, markup, imaging)
+  content/blog/      posts — Markdown page bundles (images alongside index.md)
+  layouts/index.html standalone homepage (sidebar + bio; its own styling)
+  themes/resunay-v5/ vendored reading theme + shortcodes
+  static/            homepage assets: assets/{style.css,photo.jpg}, Nay-San_CV.pdf, _headers
+public/              ← GENERATED deploy artefact (Cloudflare Pages serves this); gitignored
+Dockerfile           Node dev container: Hugo + Task + Wrangler + gh
 docker-compose.yaml  idle container; mounts the repo + host gh config (read-only)
-Taskfile.yml         build / preview / create / push
+Taskfile.yml         build / dev / preview / create / push
 wrangler.toml        Cloudflare Pages project config
 tmp/                 scratch / design notes (gitignored; not deployed)
 ```
 
-`public/` is the **permanent deploy contract**: today it holds the static files
-directly; if a generator is ever introduced, source moves to `src/` and builds
-*into* `public/` so the deploy config never changes. Keep it generator-agnostic
-— no tool-specific directories.
+`public/` is the **permanent deploy contract**: Hugo builds *into* it from
+`hugo/`, so the Cloudflare Pages output dir and `task push` never change.
+`public/` is **generated and gitignored — never hand-edit it**. (The source
+folder is named `hugo/` for obviousness; earlier notes called it `src/`.)
 
 ## Dev workflow
 
 ```sh
+docker compose build    # rebuild the image once (Hugo was added to the Dockerfile)
 docker compose up -d    # start the dev container
 # attach to it (VS Code "Attach to Running Container" / docker exec)
-task preview            # serve ./public at http://localhost:8919
-task build              # build into ./public (a no-op until there's a real build step)
+task dev                # Hugo dev server + LiveReload at http://localhost:8919 (fast edit loop)
+task build              # Hugo build: hugo/ -> public/
+task preview            # Pages-faithful serve of ./public at http://localhost:8919
 task push               # deploy ./public to Cloudflare Pages (production)
 ```
 
@@ -80,9 +84,10 @@ Start a phase by writing `tmp/YYYY-MM-DD_<topic>/README.md` with the plan first.
   genuinely needed. **Longevity over cleverness.** (Most code here is
   agent-written; the bar is that a human could comfortably read and hand-edit
   it, not that it was typed by hand.)
-- **Minimal dependencies.** No framework and no build step until there's a real
-  reason. System fonts. (Font Awesome is a CDN dependency for contact icons for
-  now; self-host or inline it later.)
+- **Minimal dependencies.** Hugo is the one build dependency; no JS framework.
+  System fonts (the homepage adds Inter + Noto Sans Myanmar via the Google Fonts
+  CDN). (Font Awesome is a CDN dependency for contact icons for now; self-host or
+  inline it later.)
 - **Semantic HTML; a light, system-sans visual language** with a single accent
   link colour. Match the existing conventions in `public/`.
 - **Keep things decoupled** — the homepage and the future blog are independent;

@@ -1,0 +1,8 @@
+{{- /* Photo-essay gallery. Wrap {{< photo >}} children.
+       hero="true" => one full-bleed hero photo; otherwise a capped-band grid.
+       Both carry .pswp-gallery so PhotoSwipe wires them as lightboxes. */ -}}
+{{- if .Get "hero" -}}
+<figure class="gallery-single fullbleed pswp-gallery">{{ .Inner }}</figure>
+{{- else -}}
+<div class="gallery pswp-gallery">{{ .Inner }}</div>
+{{- end -}}

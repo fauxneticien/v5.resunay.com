@@ -1,0 +1,25 @@
+/* =========================================================================
+   Theme layout for abcjs scores — loaded ONLY on pages using {{< abcjs >}}.
+   Lets a score span wider than the reading measure. abcjs renders with
+   responsive:'resize', so it fits whatever width the wrapper gives it.
+   ========================================================================= */
+
+/* keep the wide breakout from spawning a horizontal scrollbar */
+html { overflow-x: hidden; }
+
+/* center the reading column so the viewport-centered breakout below resolves
+   (essay.css left-aligns .content to reserve the right margin for sidenotes;
+   these music posts don't use sidenotes) */
+.content, nav, .colophon { margin-left: auto; margin-right: auto; }
+
+/* the rendered score breaks out to a centered band wider than the text
+   (--wide-band, shared with photo galleries; see essay.css) */
+.abcjs-wrapper {
+  width: min(var(--wide-band), 100vw - 3rem);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* let the score fill that band (plugin css caps paper at 1200px) */
+.abcjs-wrapper [id^="paper-"] { max-width: 100%; }

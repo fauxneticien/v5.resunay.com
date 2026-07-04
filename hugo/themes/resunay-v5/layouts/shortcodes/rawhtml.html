@@ -1,0 +1,6 @@
+{{- /* Escape hatch for one-off, hand-written HTML widgets inside a Markdown
+       post. Everything between the tags is emitted verbatim — Goldmark does
+       not reparse it, so block HTML containing blank lines (e.g. <pre> inside
+       a <table>) survives intact, unlike raw HTML pasted straight into
+       Markdown. Use for bespoke, post-specific markup. */ -}}
+{{ .Inner | safeHTML }}

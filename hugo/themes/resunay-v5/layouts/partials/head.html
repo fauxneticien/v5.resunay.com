@@ -1,0 +1,24 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} &mdash; {{ .Site.Title }}{{ end }}</title>
+{{ with .Description }}<meta name="description" content="{{ . }}">{{ end }}
+<link rel="preload" href="{{ "fonts/InterVariable.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="{{ "css/essay.css" | relURL }}">
+{{ if .HasShortcode "gallery" }}
+<link rel="stylesheet" href="{{ "photoswipe/photoswipe.css" | relURL }}">
+<link rel="stylesheet" href="{{ "css/gallery.css" | relURL }}">
+{{ end }}
+{{ if .HasShortcode "abcjs" }}
+<script src="{{ "plugins/abcjs/vendor/abcjs-basic-min.js" | relURL }}"></script>
+<link rel="stylesheet" href="{{ "plugins/abcjs/vendor/abcjs-audio.min.css" | relURL }}">
+<link rel="stylesheet" href="{{ "plugins/abcjs/abcjs.css" | relURL }}">
+<link rel="stylesheet" href="{{ "css/abcjs.css" | relURL }}">
+{{ end }}
+{{ if .HasShortcode "gpx" }}
+<link rel="stylesheet" href="{{ "plugins/gpx/vendor/leaflet.css" | relURL }}">
+<link rel="stylesheet" href="{{ "plugins/gpx/gpx.css" | relURL }}">
+<script src="{{ "plugins/gpx/vendor/leaflet.js" | relURL }}"></script>
+{{ end }}
+{{ if .HasShortcode "mermaid" }}
+<link rel="stylesheet" href="{{ "css/mermaid.css" | relURL }}">
+{{ end }}

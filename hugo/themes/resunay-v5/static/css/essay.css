@@ -1,0 +1,145 @@
+/* =========================================================================
+   Nay San — essay / blog reading theme  (SEPARATE site; future Hugo blog).
+   Same light/sans visual language as the homepage, plus the reading layer:
+   a centered measure with a right margin column for Tufte sidenotes
+   (Potluck `--move-up` pattern), multi-width figures, and an isolated
+   figure.demo JS seam. Not integrated with the static homepage by design.
+   ========================================================================= */
+
+/* Self-hosted Inter (SIL OFL 1.1). See static/fonts/Inter-OFL.txt.
+   Path is relative to this stylesheet (/css/essay.css). */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/InterVariable.woff2") format("woff2");
+}
+
+:root {
+  --ink:   #111;
+  --body:  #333;
+  --muted: #555;
+  --link:  #0066cc;
+  --rule:  #eee;
+  --tint:  #f7f7f7;
+
+  --measure: 38rem;     /* reading column */
+  --margin:  14rem;     /* sidenote column */
+  --gap:     2.5rem;
+  --page:    calc(var(--measure) + var(--gap) + var(--margin));
+
+  --wide-band: 72rem;   /* shared width for wide blocks (galleries, scores) */
+
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: var(--sans);
+  line-height: 1.6;
+  color: var(--body);
+  background: #fff;
+  font-size: 16px;
+  margin: 0;
+}
+.page { max-width: var(--page); margin: 0 auto; padding: 0 20px 60px; }
+
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin: 0 0 1em; }
+strong { font-weight: 650; }
+
+/* ---- top nav (matches homepage) -------------------------------------- */
+nav {
+  display: flex; align-items: center; gap: 1rem 1.5rem; flex-wrap: wrap;
+  padding: 1.1rem 0; margin-bottom: 2rem;
+  border-bottom: 1px solid var(--rule);
+  max-width: var(--measure);
+}
+nav .site-name { font-weight: 700; color: var(--ink); margin-right: auto; }
+nav a { color: var(--muted); font-size: 0.92rem; }
+nav a:hover, nav a[aria-current="page"] { color: var(--link); }
+
+/* ---- content well: measure left, margin free for sidenotes ----------- */
+.content { max-width: min(var(--measure), 100%); }
+
+.essay-date {
+  text-transform: uppercase; letter-spacing: 1px;
+  font-size: 0.8rem; color: var(--muted); margin: 0 0 0.3em;
+}
+.essay-title { font-size: 2.1em; line-height: 1.12; color: var(--ink); margin: 0 0 1.2em; }
+
+.content h2 {
+  font-size: 1.35em; color: var(--ink);
+  margin: 2em 0 0.5em; line-height: 1.2; scroll-margin-top: 1rem;
+}
+.content h2 .anchor {
+  margin-left: .35em; font-size: .7em; color: var(--rule);
+  text-decoration: none; opacity: 0; transition: opacity .12s;
+}
+.content h2:hover .anchor { opacity: 1; color: var(--link); }
+
+/* ---- sidenotes: Tufte margin (Potluck `--move-up`) ------------------- */
+.content { counter-reset: sidenote; }
+.sidenote-ref { counter-increment: sidenote; }
+.sidenote-ref::after {
+  content: counter(sidenote);
+  font-size: .65em; vertical-align: super; color: var(--link); margin-left: 1px;
+}
+.sidenote {
+  float: right; clear: right;
+  width: var(--margin);
+  margin-right: calc(-1 * (var(--margin) + var(--gap)));
+  margin-top: calc(var(--move-up, 0) * -1.6rem);
+  margin-bottom: 1rem;
+  font-size: 0.82rem; line-height: 1.45; color: var(--muted);
+}
+.sidenote::before {
+  content: counter(sidenote) " ";
+  font-size: .8em; vertical-align: super; color: var(--link);
+}
+
+/* ---- figures: measure default, .wide full-bleed ---------------------- */
+figure { margin: 1.8em 0; }
+figure img { max-width: 100%; height: auto; display: block; }
+figcaption { font-size: 0.85rem; color: var(--muted); margin-top: 0.5em; line-height: 1.45; }
+.wide { width: var(--page); max-width: 100%; }
+
+.ph {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 9rem; background: var(--tint);
+  border: 1px dashed #ddd; border-radius: 4px;
+  color: #999; font-size: 0.85rem; text-align: center; padding: 1rem;
+}
+.wide .ph { min-height: 13rem; }
+
+/* ---- demo seam: reading layout (CSS) ⟂ behavior (JS) ----------------- */
+figure.demo {
+  border: 1px solid var(--rule); border-radius: 6px;
+  padding: 1rem; background: var(--tint);
+}
+
+pre, code { font-family: var(--mono); font-size: 0.85em; }
+pre { background: var(--tint); border: 1px solid var(--rule); border-radius: 4px; padding: 1rem; overflow-x: auto; }
+code { background: var(--tint); padding: 0.05em 0.3em; border-radius: 3px; }
+pre code { background: none; padding: 0; }
+
+hr { border: none; border-top: 1px solid var(--rule); margin: 2.5em 0; }
+
+footer { margin-top: 3em; padding-top: 1em; border-top: 1px solid var(--rule); font-size: 0.88em; color: var(--muted); max-width: var(--measure); }
+
+/* ---- responsive: collapse margin; fold sidenotes inline -------------- */
+@media (max-width: 1040px) {
+  .sidenote {
+    float: none; width: auto;
+    margin: 1em 0;
+    padding: 0.6em 0.9em;
+    background: var(--tint);
+    border-left: 3px solid var(--link);
+    border-radius: 0 4px 4px 0;
+  }
+  .wide { width: 100%; }
+}

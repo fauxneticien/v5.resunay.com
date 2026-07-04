@@ -1,0 +1,9 @@
+{{- /* ABC music notation. Emits the <pre><code class="abcjs"> block that the
+       abcjs plugin (static/plugins/abcjs/abcjs.js) scans and replaces with the
+       rendered score + violin tabs + audio playback. Wrap the ABC tune body
+       between the opening and closing shortcode tags.
+       .Inner is raw (template.HTML); escape ampersand and angle brackets so ABC
+       (which uses angle brackets for broken rhythm) survives into
+       codeEl.textContent intact. */ -}}
+{{- $abc := .Inner | replaceRE "&" "&amp;" | replaceRE "<" "&lt;" | replaceRE ">" "&gt;" -}}
+<pre><code class="abcjs">{{ $abc | safeHTML }}</code></pre>
