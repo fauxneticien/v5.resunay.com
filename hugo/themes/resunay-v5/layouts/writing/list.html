@@ -1,0 +1,19 @@
+{{ define "main" }}
+  <article>
+    <h1 class="essay-title">{{ .Title }}</h1>
+    {{ .Content }}
+    {{/* Group posts under their category, categories A→Z. Alphabetical sort for
+         now; swap to .ByCount or a custom order later if needed. */}}
+    {{ range .Site.Taxonomies.categories.Alphabetical }}
+      <h2 class="post-category">{{ with .Page }}{{ .LinkTitle }}{{ else }}{{ .Term }}{{ end }}</h2>
+      <ul class="post-list">
+        {{ range .Pages.ByDate.Reverse }}
+          <li>
+            <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+            <span class="post-date">{{ .Date.Format "Jan 2006" }}</span>
+          </li>
+        {{ end }}
+      </ul>
+    {{ end }}
+  </article>
+{{ end }}

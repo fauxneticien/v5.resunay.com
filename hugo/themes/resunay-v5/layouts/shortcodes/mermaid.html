@@ -1,0 +1,7 @@
+{{- /* Mermaid diagram. Emits <pre class="mermaid"> which the mermaid library
+       (static/plugins/mermaid/vendor/mermaid.min.js) renders into an SVG.
+       .Inner is raw; escape ampersand and angle brackets so the diagram source
+       (which uses <br/> and <small> inside node labels) reaches textContent
+       intact for mermaid to parse. */ -}}
+{{- $src := .Inner | replaceRE "&" "&amp;" | replaceRE "<" "&lt;" | replaceRE ">" "&gt;" -}}
+<pre class="mermaid">{{ $src | safeHTML }}</pre>

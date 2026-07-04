@@ -6,6 +6,7 @@ version: '3'
 
 vars:
   PROJECT: resunay-v5
+  HUGO_DIR: hugo         # Hugo source; builds into PUBLIC_DIR via publishDir=../public
   PUBLIC_DIR: public
   PREVIEW_PORT: 8919
   BRANCH: main          # Cloudflare Pages production branch — deploys on it go live
@@ -18,22 +19,24 @@ tasks:
     silent: true
 
   build:
-    desc: "Build the static site into {{.PUBLIC_DIR}}/ (hand-written for now — no compile step)"
+    desc: "Build the site with Hugo from {{.HUGO_DIR}}/ into {{.PUBLIC_DIR}}/ (publishDir=../public)"
     cmds:
-      - 'echo "Static site — nothing to compile. Artefacts are in {{.PUBLIC_DIR}}/."'
-      # When a generator (Astro/Eleventy/Hugo/…) is added later, its build command
-      # goes here and must emit into {{.PUBLIC_DIR}}/ so `push` stays unchanged.
+      # Hugo writes into {{.PUBLIC_DIR}}/ (set via publishDir in hugo/hugo.toml),
+      # so `push` — which uploads {{.PUBLIC_DIR}}/ — stays unchanged.
+      # --cleanDestinationDir prunes stale output (e.g. after a post is renamed),
+      # since Hugo's build is otherwise additive and never deletes old files.
+      - hugo --source {{.HUGO_DIR}} --minify --cleanDestinationDir
 
   dev:
-    desc: "Serve {{.PUBLIC_DIR}}/ on port {{.PREVIEW_PORT}} with auto-reload on save (fast edit loop)"
+    desc: "Hugo dev server on port {{.PREVIEW_PORT}} with LiveReload (fast edit loop)"
     cmds:
-      # browser-sync watches the dir and injects its own reload. wrangler's
-      # --live-reload only fires on Functions rebuilds (this is a static site, so
-      # never) — see github.com/cloudflare/workers-sdk/issues/5351.
-      - browser-sync start --server {{.PUBLIC_DIR}} --files "{{.PUBLIC_DIR}}/**/*" --host 0.0.0.0 --port {{.PREVIEW_PORT}} --no-open --no-ui
+      # Hugo renders from memory and injects LiveReload; watches content, layouts,
+      # and static/ — so homepage + blog both hot-reload from one command.
+      - hugo server --source {{.HUGO_DIR}} --bind 0.0.0.0 --port {{.PREVIEW_PORT}}
 
   preview:
-    desc: "Serve {{.PUBLIC_DIR}}/ on port {{.PREVIEW_PORT}} — Pages-faithful (no auto-reload; use for final checks)"
+    desc: "Build, then serve {{.PUBLIC_DIR}}/ on port {{.PREVIEW_PORT}} — Pages-faithful (no auto-reload; final checks)"
+    deps: [build]
     cmds:
       - wrangler pages dev {{.PUBLIC_DIR}} --ip 0.0.0.0 --port {{.PREVIEW_PORT}}
 

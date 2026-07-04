@@ -1,0 +1,70 @@
+/* =========================================================================
+   Photo-essay galleries — loaded ONLY on pages that use {{< gallery >}}.
+   Mirrors the exposure port: full-bleed hero + capped-band grids with
+   per-photo column spans and hover captions.
+   ========================================================================= */
+
+/* keep the 100vw full-bleed from spawning a horizontal scrollbar */
+html { overflow-x: hidden; }
+
+/* Center the reading column. essay.css left-aligns .content to reserve the
+   right margin for sidenotes; photo-essays don't use sidenotes, and centering
+   is what makes the viewport-centered breakouts below resolve exactly.
+   (Scoped safely: this file only loads on gallery pages.) */
+.content, nav, .colophon { margin-left: auto; margin-right: auto; }
+
+/* single hero photo: edge-to-edge 100vw */
+.fullbleed {
+  width: 100vw; position: relative; left: 50%; transform: translateX(-50%);
+}
+
+/* multi-photo set: centered band, wider than text but not full-bleed
+   (--wide-band, shared with abcjs scores; see essay.css).
+   6-col grid; each photo's grid-column: span N set inline (span 2 = 3-up,
+   span 3 = 2-up). */
+.gallery {
+  width: min(var(--wide-band), 100vw - 3rem);
+  position: relative; left: 50%; transform: translateX(-50%);
+  margin-block: 2.5em;
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px;
+}
+.gallery-item { position: relative; display: block; overflow: hidden; border-radius: 3px; }
+.gallery-item img {
+  display: block; width: 100%; height: 100%;
+  aspect-ratio: 3 / 2; object-fit: contain; background: #fff;
+}
+
+/* Exposure-style hover caption: white text on a top dark gradient. */
+.hover-cap {
+  position: absolute; top: 0; left: 0; right: 0;
+  padding: .55em .8em 1.1em;
+  color: #fff; font-size: .9rem; line-height: 1.35; text-align: left;
+  background: linear-gradient(rgba(0, 0, 0, .85), rgba(0, 0, 0, 0));
+  opacity: 0; transition: opacity .34s cubic-bezier(.42, 0, .585, 1.23);
+  pointer-events: none;
+}
+.gallery-item:hover .hover-cap,
+.gallery-item:focus-visible .hover-cap { opacity: 1; }
+
+/* hero photo: capped height, caption below (always visible) */
+figure.gallery-single { display: block; margin-block: 2.5em; }
+figure.gallery-single .gallery-item { border-radius: 0; }
+figure.gallery-single img {
+  aspect-ratio: auto; width: 100%; height: auto;
+  max-height: 82vh; object-fit: cover;
+}
+figure.gallery-single figcaption {
+  max-width: var(--measure); margin: .5em auto 0; padding: 0 8px;
+}
+
+/* PhotoSwipe in-lightbox caption */
+.pswp__dynamic-caption {
+  font-size: .85rem; color: #eee; padding: .6em 1em; text-align: center;
+}
+
+/* narrow screens: one photo per row, full band width (spans ignored);
+   the hero stays full-bleed. */
+@media (max-width: 700px) {
+  .gallery { grid-template-columns: 1fr; }
+  .gallery-item { grid-column: 1 / -1 !important; }
+}

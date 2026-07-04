@@ -1,7 +1,13 @@
 # dependencies / tooling
+.claude/
 node_modules/
 .wrangler/
 .DS_Store
+
+# Hugo build output (generated into the deploy dir) + caches
+/public/
+hugo/resources/
+hugo/.hugo_build.lock
 
 # secrets
 .env

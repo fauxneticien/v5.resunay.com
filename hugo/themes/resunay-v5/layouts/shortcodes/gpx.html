@@ -1,0 +1,9 @@
+{{- /* GPX ride widget. Resolves the page-bundle GPX file and hands its URL to
+       the gpx plugin (static/plugins/gpx/gpx.js), which draws a Leaflet route
+       map, a summary stat bar, and an elevation profile.
+       Params: src (bundle-relative .gpx), title (optional; else the GPX name). */ -}}
+{{- $gpx := .Page.Resources.GetMatch (.Get "src") -}}
+{{- if not $gpx -}}
+  {{- errorf "gpx shortcode: file %q not found in page bundle %q" (.Get "src") .Page.File.Path -}}
+{{- end -}}
+<div class="gpx-widget" data-gpx="{{ $gpx.RelPermalink }}"{{ with .Get "title" }} data-title="{{ . }}"{{ end }}></div>

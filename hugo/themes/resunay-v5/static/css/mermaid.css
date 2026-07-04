@@ -1,0 +1,35 @@
+/* Mermaid diagrams — loaded only on pages using {{< mermaid >}}.
+   Also provides the shared wide-layout utilities (centering + .wide) this
+   post's raw-HTML tables rely on. */
+
+/* keep wide breakouts from spawning a horizontal scrollbar */
+html { overflow-x: hidden; }
+/* center the reading column so viewport-centered breakouts resolve */
+.content, nav, .colophon { margin-left: auto; margin-right: auto; }
+
+/* generic wide-block utility: centered band wider than the text measure
+   (--wide-band; see essay.css). Named .wide-band to avoid colliding with
+   essay.css's own .wide (which caps at max-width:100%). */
+.wide-band {
+  width: min(var(--wide-band), 100vw - 3rem);
+  max-width: none;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* mermaid renders an SVG, not code — strip the inherited <pre> chrome and
+   let the diagram use the wide band, centered. */
+pre.mermaid {
+  background: transparent;
+  border: none;
+  padding: 0;
+  overflow: visible;
+  width: min(var(--wide-band), 100vw - 3rem);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 2em 0;
+  text-align: center;
+}
+pre.mermaid svg { max-width: 100%; height: auto; }

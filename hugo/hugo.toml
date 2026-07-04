@@ -1,0 +1,23 @@
+baseURL = "https://resunay-v5.pages.dev/"
+locale = "en-us"
+title = "Nay San"
+theme = "resunay-v5"
+
+# Build into the repo-root deploy artefact. `public/` is the permanent Cloudflare
+# Pages contract; Hugo writes into it and `task push` uploads it unchanged.
+publishDir = "../public"
+
+# The reading design uses a few inline HTML bits (sidenote <aside>), so allow
+# raw HTML through Goldmark. Smart punctuation is on so "--" etc. render nicely.
+[markup]
+  [markup.goldmark.renderer]
+    unsafe = true
+  [markup.goldmark.parser]
+    autoHeadingID = true
+  [markup.goldmark.extensions]
+    typographer = true
+
+# Defaults for Hugo's image pipeline (gallery thumbnails, future hero resize).
+[imaging]
+  quality = 82
+  resampleFilter = "Lanczos"

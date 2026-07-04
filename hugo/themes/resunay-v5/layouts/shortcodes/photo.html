@@ -1,0 +1,17 @@
+{{- /* One photo inside {{< gallery >}}. Resolves the page-bundle image so the
+       lightbox gets real pixel dimensions; grid thumbnails are downscaled by
+       Hugo. Params: src (bundle-relative), caption, span (grid cols, default 2). */ -}}
+{{- $img := .Page.Resources.GetMatch (.Get "src") -}}
+{{- if not $img -}}
+  {{- errorf "photo shortcode: image %q not found in page bundle %q" (.Get "src") .Page.File.Path -}}
+{{- end -}}
+{{- $cap := .Get "caption" | default "" -}}
+{{- $hero := false -}}
+{{- with .Parent }}{{ $hero = .Get "hero" }}{{ end -}}
+{{- if $hero -}}
+<a class="gallery-item" href="{{ $img.RelPermalink }}" data-pswp-width="{{ $img.Width }}" data-pswp-height="{{ $img.Height }}" data-pswp-caption="{{ $cap }}" target="_blank" rel="noreferrer"><img src="{{ $img.RelPermalink }}" alt="{{ $cap }}" loading="lazy"></a><figcaption>{{ $cap }}</figcaption>
+{{- else -}}
+{{- $span := .Get "span" | default "2" -}}
+{{- $thumb := $img.Resize "900x q82" -}}
+<a class="gallery-item" style="grid-column: span {{ $span }};" href="{{ $img.RelPermalink }}" data-pswp-width="{{ $img.Width }}" data-pswp-height="{{ $img.Height }}" data-pswp-caption="{{ $cap }}" target="_blank" rel="noreferrer"><img src="{{ $thumb.RelPermalink }}" width="{{ $thumb.Width }}" height="{{ $thumb.Height }}" alt="{{ $cap }}" loading="lazy"><span class="hover-cap">{{ $cap }}</span></a>
+{{- end -}}

@@ -1,0 +1,56 @@
+/* GPX ride widget — Strava/RideWithGPS style. Loaded only on {{< gpx >}} pages. */
+
+/* keep the wide breakout from spawning a horizontal scrollbar */
+html { overflow-x: hidden; }
+/* center the reading column so the viewport-centered breakout resolves */
+.content, nav, .colophon { margin-left: auto; margin-right: auto; }
+
+/* widget spans the shared wide band (see essay.css --wide-band) */
+.gpx-widget {
+  width: min(var(--wide-band), 100vw - 3rem);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-block: 2.5em;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.gpx-title {
+  font-weight: 650; color: var(--ink);
+  padding: .7em 1em; border-bottom: 1px solid var(--rule);
+}
+
+.gpx-map { height: 440px; width: 100%; z-index: 0; }
+
+/* stat bar */
+.gpx-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--rule);
+}
+.gpx-stat {
+  padding: .8em 1em; text-align: center;
+  border-right: 1px solid var(--rule);
+}
+.gpx-stat:last-child { border-right: none; }
+.gpx-stat-value { display: block; font-size: 1.35rem; color: var(--ink); font-weight: 650; line-height: 1.1; }
+.gpx-stat-label {
+  display: block; margin-top: .25em;
+  font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted);
+}
+
+/* elevation profile */
+.gpx-elevation { display: block; width: 100%; height: 90px; border-top: 1px solid var(--rule); }
+.gpx-elev-area { fill: rgba(252, 76, 2, 0.12); stroke: none; }
+.gpx-elev-line { fill: none; stroke: #fc4c02; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+
+.gpx-error { padding: 1em; color: var(--muted); }
+
+@media (max-width: 700px) {
+  .gpx-map { height: 320px; }
+  .gpx-stats { grid-template-columns: repeat(2, 1fr); }
+  .gpx-stat:nth-child(2) { border-right: none; }
+  .gpx-stat:nth-child(1), .gpx-stat:nth-child(2) { border-bottom: 1px solid var(--rule); }
+}

@@ -3,7 +3,7 @@
 # Builds happen locally on the homelab (Threadripper Pro 5955WX); only the built
 # artefacts in public/ are pushed to Cloudflare Pages. No cloud build.
 #
-# Contents: Node base + Task (go-task) + Wrangler + GitHub CLI (gh).
+# Contents: Node base + Hugo (extended) + Task (go-task) + Wrangler + GitHub CLI (gh).
 #
 # Multi-arch: builds natively on arm64 (Macbook Air M3) and amd64 (homelab) —
 # nothing pins a platform. Keep this Debian-based (glibc): Wrangler's `pages dev`
@@ -27,17 +27,33 @@ RUN mkdir -p -m 755 /etc/apt/keyrings \
   && apt-get update \
   && apt-get install -y --no-install-recommends gh \
   && rm -rf /var/lib/apt/lists/* \
-  && git config --global --add safe.directory /workspace
+  && git config --system --add safe.directory /workspace
+
+# Hugo (extended) — pinned for reproducibility; arch-aware (arm64 + amd64) via
+# `dpkg --print-architecture`. Extended build for WebP output + future SCSS.
+# Matches the version the site was prototyped on.
+ARG HUGO_VERSION=0.163.3
+RUN ARCH="$(dpkg --print-architecture)" \
+  && curl -fsSL "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-${ARCH}.deb" \
+       -o /tmp/hugo.deb \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends /tmp/hugo.deb \
+  && rm -rf /var/lib/apt/lists/* /tmp/hugo.deb \
+  && hugo version
 
 # Task (go-task) -> /usr/local/bin/task
 RUN sh -c "$(curl -fsSL https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
 
-# Wrangler (pin a version for reproducibility if desired, e.g. wrangler@4)
-# browser-sync powers `task dev` (auto-reload on save); wrangler's --live-reload
-# doesn't fire for static-only Pages projects (workers-sdk issue #5351).
-RUN npm install -g wrangler browser-sync
+# Wrangler for `task preview` (Pages-faithful serve) and `task push` (deploy).
+# `task dev` uses Hugo's own server + LiveReload, so browser-sync is no longer needed.
+RUN npm install -g wrangler
 
 WORKDIR /workspace
+
+# Pre-create the node user's config dir so it's owned by node. Otherwise Docker
+# creates it as root when mounting ${HOME}/.config/gh into it (compose), and
+# wrangler can't write /home/node/.config/.wrangler when running as uid 1000.
+RUN mkdir -p /home/node/.config && chown node:node /home/node/.config
 
 # preview port — uncommon, matches Taskfile PREVIEW_PORT + docker-compose ports
 EXPOSE 8919
