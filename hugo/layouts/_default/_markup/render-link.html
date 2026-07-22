@@ -1,0 +1,13 @@
+{{- /* Link render hook: open external links in a new tab.
+       External = the link has a host that isn't this site's baseURL host.
+       Relative paths, in-page anchors (#…), and mailto: have no host, so they
+       stay in-tab. rel="noopener noreferrer" is the safe pairing for _blank.
+       Only affects Markdown links — shortcodes/raw HTML manage their own. */ -}}
+{{- $u := urls.Parse .Destination -}}
+{{- $siteHost := (urls.Parse site.BaseURL).Host -}}
+{{- $external := and $u.Host (ne $u.Host $siteHost) -}}
+<a href="{{ .Destination | safeURL }}"{{ with .Title }} title="{{ . }}"{{ end }}{{ if $external }} target="_blank" rel="noopener noreferrer"{{ end }}>{{ .Text | safeHTML }}</a>
+{{- /* No trailing newline: the hook's output is emitted inline, so a trailing
+       newline collapses to a stray space before following punctuation (e.g. a
+       link ending a sentence would render as "text ."). This comment's `{{-`
+       trims the preceding newline; `-}}` trims the file's final newline. */ -}}
